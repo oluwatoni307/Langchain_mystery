@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.2.12/marked.min.js"></script>
+
+    <title>Multi-Agent Chat Visualization</title>
+    <style>
+      :root {
+        --kouhei-color: #2563eb;
+        --kouhei-bg: #dbeafe;
+        --masami-color: #7c3aed;
+        --masami-bg: #ede9fe;
+        --susumu-color: #dc2626;
+        --susumu-bg: #fee2e2;
+        --bg-color: #f3f4f6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+        background: var(--bg-color);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      #chat-container {
+        width: 100%;
+        max-width: 800px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .chat-header {
+        padding: 16px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: center;
+      }
+
+      .chat-messages {
+        padding: 20px;
+        height: 600px;
+        overflow-y: auto;
+        background: #f9fafb;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .message {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideIn 0.5s ease-out forwards;
+      }
+
+      .agent-name {
+        font-weight: 600;
+        margin-bottom: 4px;
+        font-size: 0.85rem;
+      }
+
+      .Kouhei-message {
+        background: var(--kouhei-bg);
+        color: var(--kouhei-color);
+        padding-left: 12px;
+      }
+
+      .masami-message {
+        background: var(--masami-bg);
+        color: var(--masami-color);
+        padding-left: 12px;
+      }
+
+      .susumu-message {
+        background: var(--susumu-bg);
+        color: var(--susumu-color);
+        padding-left: 12px;
+      }
+
+      /* Loading animation */
+      .loading-message {
+        background: #f0f0f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .loading-dots {
+        display: flex;
+        gap: 4px;
+      }
+
+      .loading-dot {
+        width: 8px;
+        height: 8px;
+        background: #666;
+        border-radius: 50%;
+        opacity: 0.3;
+      }
+
+      .loading-dot:nth-child(1) {
+        animation: dotPulse 1.5s infinite;
+      }
+
+      .loading-dot:nth-child(2) {
+        animation: dotPulse 1.5s infinite 0.2s;
+      }
+
+      .loading-dot:nth-child(3) {
+        animation: dotPulse 1.5s infinite 0.4s;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes dotPulse {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* Menu icon styling */
+      .menu-icon {
+        font-size: 20px;
+        color: #fff;
+        background-color: #333;
+        padding: 5px;
+        cursor: pointer;
+        position: fixed;
+        top: 5px;
+        left: 5px;
+        z-index: 10;
+      }
+
+      /* Sidebar styling */
+      .side-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 200px;
+        background-color: #333;
+        color: #fff;
+        padding-top: 20px;
+        box-sizing: border-box;
+        transition: transform 0.3s ease; /* Smooth open/close transition */
+        transform: translateX(0); /* Sidebar open by default */
+      }
+
+      .side-nav.closed {
+        transform: translateX(-100%); /* Hide sidebar */
+      }
+
+      /* Sidebar list styling */
+      .side-nav ul {
+        list-style-type: none;
+        margin-top: 35px; /* Add top margin here */
+
+        padding: 0;
+        margin: 0;
+      }
+
+      .side-nav ul li {
+        margin: 5px 0;
+      }
+
+      .side-nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        font-size: 16px;
+      }
+
+      .side-nav ul li a:hover {
+        background-color: #444;
+        color: #ddd;
+      }
+      .restart-buttons {
+        position: fixed;
+
+        top: 20px;
+        right: 20px;
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+      }
+
+      .restart-button {
+        padding: 8px 16px;
+
+        background-color: #334155;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .restart-button:hover {
+        background-color: #1e293b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-icon" id="menu-icon" onclick="toggleSidebar()">
+      &#9776;
+    </div>
+
+    <div class="side-nav closed" id="side-nav">
+      <ul>
+        <li>
+          <a href="{{ url_for('index') }}" style="margin-top: 23px"
+            ><i class="icon-backstory"></i> Home</a
+          >
+        </li>
+        <li>
+          <a href="{{ url_for('backstory') }}"
+            ><i class="icon-backstory"></i> Backstories and Clues</a
+          >
+        </li>
+        <li>
+          <a href="{{ url_for('Phase_prompt') }}"
+            ><i class="icon-phase"></i> Phases Prompts</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div id="chat-container">
+      <div class="restart-buttons">
+        <button class="restart-button" id="restart-chat-button">
+          Restart Chat
+        </button>
+        <button class="restart-button" id="stop-chat-button">Stop Chat</button>
+      </div>
+
+      <div class="chat-header">
+        <h1>Multi-Agent Conversation</h1>
+      </div>
+      <div id="chat-messages" class="chat-messages"></div>
+    </div>
+
+    <script>
+      // Function to stop chat (send request to terminate chat and disconnect)
+      function stopChat() {
+        fetch("/terminate", { method: "POST" }) // Send POST request to /terminate
+          .then((response) => {
+            if (response.ok) {
+              chat.disconnect(); // Disconnect the chat after termination
+              console.log("Chat terminated successfully.");
+            } else {
+              console.error("Failed to terminate chat.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error terminating chat:", error);
+          });
+      }
+
+      // Function to restart chat (send request to terminate chat, reload page)
+      function restartChat() {
+        fetch("/terminate", { method: "POST" }) // Send POST request to /terminate
+          .then((response) => {
+            if (response.ok) {
+              window.location.reload(); // Reload the page after termination
+            } else {
+              console.error("Failed to terminate chat.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error terminating chat:", error);
+          });
+      }
+
+      // Event listeners for the buttons
+      document
+        .getElementById("restart-chat-button")
+        .addEventListener("click", restartChat);
+      document
+        .getElementById("stop-chat-button")
+        .addEventListener("click", stopChat);
+
+      class ChatVisualization {
+        constructor(containerId) {
+          this.chatMessages = document.getElementById(containerId);
+          this.loadingIndicator = null;
+          this.eventSource = null;
+          this.inactivityTimeout = null; // Track inactivity timeout
+          this.initializeSSE();
+        }
+
+        createMessageElement(messageData) {
+          const messageDiv = document.createElement("div");
+          messageDiv.classList.add(
+            "message",
+            `${messageData.agent_name.toLowerCase()}-message`
+          );
+
+          const agentName = document.createElement("div");
+          agentName.classList.add("agent-name");
+          agentName.textContent = messageData.agent_name;
+
+          const messageContent = document.createElement("div");
+          messageContent.classList.add("message-content");
+          messageContent.innerHTML = marked.parse(messageData.content);
+
+          messageDiv.appendChild(agentName);
+          messageDiv.appendChild(messageContent);
+
+          return messageDiv;
+        }
+
+        createLoadingIndicator() {
+          const loadingDiv = document.createElement("div");
+          loadingDiv.classList.add("loading-message");
+
+          const dotsContainer = document.createElement("div");
+          dotsContainer.classList.add("loading-dots");
+
+          for (let i = 0; i < 3; i++) {
+            const dot = document.createElement("div");
+            dot.classList.add("loading-dot");
+            dotsContainer.appendChild(dot);
+          }
+
+          loadingDiv.appendChild(dotsContainer);
+          return loadingDiv;
+        }
+
+        showLoading() {
+          this.hideLoading(); // Remove any existing loading indicator
+          this.loadingIndicator = this.createLoadingIndicator();
+          this.chatMessages.appendChild(this.loadingIndicator);
+          this.scrollToBottom();
+        }
+
+        hideLoading() {
+          if (this.loadingIndicator) {
+            this.loadingIndicator.remove();
+            this.loadingIndicator = null;
+          }
+        }
+
+        // New: Keep loading indicator visible during active SSE events
+        resetInactivityTimer() {
+          clearTimeout(this.inactivityTimeout);
+          this.showLoading();
+
+          // Hide loading indicator only after 3 seconds of inactivity
+          this.inactivityTimeout = setTimeout(() => {
+            this.hideLoading();
+          }, 9000);
+        }
+
+        appendMessage(messageData) {
+          try {
+            const messageElement = this.createMessageElement(messageData);
+            this.chatMessages.appendChild(messageElement);
+            this.scrollToBottom();
+          } catch (error) {
+            console.error("Error appending message:", error);
+          }
+        }
+
+        scrollToBottom() {
+          requestAnimationFrame(() => {
+            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+          });
+        }
+
+        initializeSSE() {
+          this.showLoading(); // Show loading indicator initially
+          this.eventSource = new EventSource("/stream");
+
+          this.eventSource.onmessage = (event) => {
+            const messageData = JSON.parse(event.data);
+            this.appendMessage(messageData);
+            this.resetInactivityTimer(); // Reset timer on each new message
+          };
+
+          this.eventSource.onerror = (error) => {
+            console.error("EventSource error:", error);
+            this.hideLoading(); // Optionally hide loading on error
+          };
+
+          this.eventSource.onopen = () => {
+            console.log("SSE connection established");
+          };
+        }
+
+        // Clean up SSE connection
+        disconnect() {
+          if (this.eventSource) {
+            this.eventSource.close();
+            this.eventSource = null;
+          }
+          clearTimeout(this.inactivityTimeout);
+          this.hideLoading();
+        }
+      }
+
+      // Initialize chat visualization
+      const chat = new ChatVisualization("chat-messages");
+
+      // Clean up on page unload
+      window.addEventListener("beforeunload", () => {
+        chat.disconnect();
+      });
+      function keepServerAwake() {
+        setInterval(() => {
+          fetch("/keep-awake", {
+            method: "GET",
+          })
+            .then((response) => {
+              if (response.ok) {
+                console.log("Server is awake");
+              } else {
+                console.log("Server response error:", response.status);
+              }
+            })
+            .catch((error) => console.error("Error:", error));
+        }, 10000); // 10 seconds in milliseconds
+      }
+
+      // Call the function to start the interval
+      keepServerAwake();
+
+      function toggleSidebar() {
+        const sidebar = document.getElementById("side-nav");
+        const chatContainer = document.getElementById("chat-container");
+
+        sidebar.classList.toggle("closed"); // Toggle closed class on sidebar
+        chatContainer.classList.toggle("full-width"); // Toggle full-width class on chat container
+      }
+
+      // Clean up on page unload
+      window.addEventListener("beforeunload", () => {
+        chat.disconnect();
+      });
+    </script>
+  </body>
+</html>

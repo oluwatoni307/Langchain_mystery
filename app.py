@@ -97,6 +97,12 @@ def terminate_coverage():
     }
 
 
+@app.route("/")
+def index():
+    return render_template("frontend.html")
+
+
+
 from phases.blueprint import update_api
 from phases.prompt import *
 

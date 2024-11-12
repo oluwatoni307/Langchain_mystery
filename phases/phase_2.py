@@ -123,11 +123,7 @@ def summerize(state: State):
     full_summary = state["summerized"] + "\n" + summary
 
     return {
-<<<<<<< HEAD
         "messages": [RemoveMessage(id=m.id) for m in state["messages"][:-4]],
-=======
-        "messages": [RemoveMessage(id=m.id) for m in state["messages"][:-2]],
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
         "summerized": full_summary,
     }
 
@@ -136,11 +132,7 @@ def summerize(state: State):
 
 
 def selector(state: State):
-<<<<<<< HEAD
     if len(state["messages"]) > 8:
-=======
-    if len(state["messages"]) > 6:
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
         return "summerize"
 
     if state["next_agent"] == "DONE":

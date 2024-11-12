@@ -20,15 +20,8 @@ from phases.cues import cue, personal_cues
 
 phase_2_prompt = f"""
 # Phase 2: Clue Analysis & Evidence Drawing Phase
-<<<<<<< HEAD
 ## Clues to be Analyzed:
 {cue}
-=======
-
-## Clues to be Analyzed:
-{cue}
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 ## Core Purpose
 Draw out evidence by:
 - Analyzing clues thoroughly
@@ -36,7 +29,6 @@ Draw out evidence by:
 - Making connections between clues and suspects
 - Pursuing logical accusations when evidence suggests involvement
 
-<<<<<<< HEAD
 ## Anti-Looping Mechanism
 IMPORTANT:
 - If discussion starts repeating or looping with previously mentioned clues/evidence:
@@ -46,28 +38,16 @@ IMPORTANT:
 - Track all discussed clues to prevent repetitive analysis
 
 ## Evidence Drawing Techniques
-=======
-## Evidence Drawing Techniques
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 1. Ask Probing Questions
     - "Has anyone noticed something unusual about [clue detail]?"
     - "Why would this [clue] be present at this location?"
     - "Who had access to [location/item] at this time?"
     - "Does anyone recognize this [clue element]?"
-<<<<<<< HEAD
-=======
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 2. Make Connections
     - Link clues to potential suspects
     - Question suspects about their relation to specific clues
     - Point out patterns between different pieces of evidence
     Example: "This matches what we found in [previous location]. Who here has connections to both places?"
-<<<<<<< HEAD
-=======
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 3. Direct Questioning
     - When evidence suggests involvement, question specific suspects
     - Ask for explanations of suspicious connections
@@ -80,10 +60,7 @@ As both moderator and suspect:
 - Ask leading questions to draw out observations
 - Respond when questioned about your own involvement
 - Keep discussion focused on evidence and logical connections
-<<<<<<< HEAD
 - Monitor for repetitive discussions and prevent looping
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 ## Process Management
 1. For Each Clue:
@@ -92,28 +69,17 @@ As both moderator and suspect:
     - Probe for deeper connections
     - Question relevant suspects
     - Summarize findings
-<<<<<<< HEAD
     - Check if clue was previously discussed
-=======
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 2. Location Management:
     - Group related clues by location
     - Draw connections between locations
     - Summarize location findings before moving on
-<<<<<<< HEAD
-=======
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 3. Discussion Control:
     - Challenge unsupported theories
     - Keep focus on current evidence
     - Ensure logical progression
     - Prevent speculation without evidence
-<<<<<<< HEAD
     - Terminate discussion loops by introducing new evidence or ending phase
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 When all clues have been thoroughly analyzed and all relevant questions asked, provide a final summary and declare "THIS PHASE IS COMPLETED"
 """
@@ -127,7 +93,6 @@ You are participating in a murder mystery discussion.Here are the rules for the 
 - You can only discuss established clues, no creating new ones
 - You must maintain consistency with all known information
 
-<<<<<<< HEAD
 
 ## Anti-Looping Mechanism
 IMPORTANT:
@@ -138,8 +103,6 @@ IMPORTANT:
 - Track all discussed clues to prevent repetitive analysis
 
 
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 2. Discussion Rules:
 - You can only initiate questions about OTHER players' clues, never your own
 - When questioned about your clues, you must:
@@ -184,7 +147,6 @@ phase_4_prompt = """You are participating in a murder mystery discussion. This i
   Account for physical possibilities/limitations
   Reference suspect's capabilities and access
 
-<<<<<<< HEAD
 
 ## Anti-Looping Mechanism
 IMPORTANT:
@@ -194,8 +156,6 @@ IMPORTANT:
 - Flag and stop discussion if the last message only references previously discussed clues
 - Track all discussed clues to prevent repetitive analysis
 
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 2. Accusation Format:
 - When making an accusation:
   State your theory clearly
@@ -253,15 +213,10 @@ Reminder: This is your concluding statement—be bold and clear in your reasonin
 """
 
 
-<<<<<<< HEAD
 
 
 moderator_2 = f"""
 Response Verification & Agent Selection
-=======
-moderator_2 = f"""
- Response Verification & Agent Selection
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 Given these inputs:
 - last_conversation
@@ -270,7 +225,6 @@ Given these inputs:
 - clues: {cue}
 
 PRIMARY FOCUS 1 - RESPONSE VERIFICATION
-<<<<<<< HEAD
 1. Verify Response Quality:
   - Must meaningfully engage with previous question/point
   - Cannot start with same opening line/phrase as previous agent
@@ -300,40 +254,16 @@ PRIMARY FOCUS 2 - AGENT SELECTION
   - Accusations toward particular agents
   - Clear requests for someone to respond
   - Any direct addressing of agents
-=======
-1. Verify Response Accuracy:
-   - Does it correctly follow from the last conversation?
-   - Does it stay within the established clues?
-   - Are there any hallucinations (claims not supported by clues)?
-
-2. Common Errors to Check:
-   - Ignoring/contradicting last conversation
-   - Making claims without clue support
-   - Adding fictional information
-
-PRIMARY FOCUS 2 - AGENT SELECTION
-1. Analyze Response for Agent Direction:
-   - Direct mentions/questions to specific agents
-   - Accusations toward particular agents
-   - Clear requests for someone to respond
-   - Any direct addressing of agents
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 Output Format:
 
 isCorrect: [true/false]
-<<<<<<< HEAD
 - True: Response is accurate, relevant, and progresses discussion
 - False: Contains errors, loops, or fails verification criteria
-=======
-- True: Response is accurate and relevant
-- False: Contains errors or hallucinations
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 review: 
 - Detail any errors found
 - If incorrect, explain why and how to fix
-<<<<<<< HEAD
 - Note if discussion appears to be looping
 
 next_agent: [Select Based On]
@@ -402,30 +332,17 @@ next_agent: [Select Based On]
   - OR loop detected with no new clues available
 3. Random selection from possible_next_agent ONLY if no clear agent direction found
 """
-=======
-
-next_agent: [Select Based On]
-1. The specific agent directly addressed in the response
-2. "DONE" if response contains "THIS PHASE IS COMPLETED"
-3. Random selection from possible_next_agent ONLY if no clear agent direction found
-"""
-
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 moderator_4 = f"""
 Response Verification & Agent Selection
 
 Given these inputs:
 - last_conversation
-<<<<<<< HEAD
 - summerized previous conversation
 
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 - agent_response 
 - possible_next_agent (list of two agents)
 
 PRIMARY FOCUS 1 - RESPONSE VERIFICATION
-<<<<<<< HEAD
 1. Verify Response Quality:
   - Must meaningfully engage with previous question/point
   - Cannot start with same opening line/phrase as previous agent
@@ -455,86 +372,16 @@ PRIMARY FOCUS 2 - AGENT SELECTION
   - Accusations toward particular agents
   - Clear requests for someone to respond
   - Any direct addressing of agents
-=======
-1. Verify Response Coherence:
-   - Does it directly address the content of the last message?
-   - Is it a logically appropriate follow-up?
-   - Does it maintain conversation continuity?
-
-2. Common Errors to Check:
-   - Ignoring the previous message's content
-   - Going off on unrelated tangents
-   - Failing to address specific questions/points raised
-   - Contradicting the context of the conversation
-
-PRIMARY FOCUS 2 - AGENT SELECTION
-1. Analyze Response for Agent Direction:
-   - Direct mentions/questions to specific agents
-   - Accusations toward particular agents
-   - Clear requests for someone to respond
-   - Any direct addressing of agents
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 Output Format:
 
 isCorrect: [true/false]
-<<<<<<< HEAD
 - True: Response is accurate, relevant, and progresses discussion
 - False: Contains errors, loops, or fails verification criteria
-=======
-- True: Response properly addresses the last message
-- False: Response fails to adequately address the last message
-
-review: 
-- Detail any coherence issues found
-- If incorrect, explain why and what should have been addressed
-
-next_agent: [Select Based On]
-1. The specific agent directly addressed in the response
-2. "DONE" if response contains "THIS PHASE IS COMPLETED"
-3. Random selection from possible_next_agent ONLY if no clear agent direction found
-
-"""
-
-moderator_3 = f"""
- Response Verification & Agent Selection
-
-Given these inputs:
-- last_conversation
-- agent_response 
-- possible_next_agent (list of two agents)
-- clues:
-    {personal_cues}
-
-PRIMARY FOCUS 1 - RESPONSE VERIFICATION
-1. Verify Response Accuracy:
-   - Does it correctly follow from the last conversation?
-   - Does it stay within the established clues?
-   - Are there any hallucinations (claims not supported by clues)?
-
-2. Common Errors to Check:
-   - Ignoring/contradicting last conversation
-   - Making claims without clue support
-   - Adding fictional information
-
-PRIMARY FOCUS 2 - AGENT SELECTION
-1. Analyze Response for Agent Direction:
-   - Direct mentions/questions to specific agents
-   - Accusations toward particular agents
-   - Clear requests for someone to respond
-   - Any direct addressing of agents
-
-Output Format:
-
-isCorrect: [true/false]
-- True: Response is accurate and relevant
-- False: Contains errors or hallucinations
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 review: 
 - Detail any errors found
 - If incorrect, explain why and how to fix
-<<<<<<< HEAD
 - Note if discussion appears to be looping
 
 next_agent: [Select Based On]
@@ -542,12 +389,6 @@ next_agent: [Select Based On]
 2. "DONE" if:
   - Response contains "THIS PHASE IS COMPLETED"
   - OR loop detected with no new clues available
-=======
-
-next_agent: [Select Based On]
-1. The specific agent directly addressed in the response
-2. "DONE" if response contains "THIS PHASE IS COMPLETED"
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 3. Random selection from possible_next_agent ONLY if no clear agent direction found
 """
 

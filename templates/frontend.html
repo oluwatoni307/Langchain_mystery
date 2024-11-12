@@ -209,7 +209,6 @@
         background-color: #444;
         color: #ddd;
       }
-<<<<<<< HEAD
       .restart-buttons {
         position: fixed;
 
@@ -234,8 +233,6 @@
       .restart-button:hover {
         background-color: #1e293b;
       }
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
     </style>
   </head>
   <body>
@@ -263,7 +260,6 @@
       </ul>
     </div>
     <div id="chat-container">
-<<<<<<< HEAD
       <div class="restart-buttons">
         <button class="restart-button" id="restart-chat-button">
           Restart Chat
@@ -271,8 +267,6 @@
         <button class="restart-button" id="stop-chat-button">Stop Chat</button>
       </div>
 
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
       <div class="chat-header">
         <h1>Multi-Agent Conversation</h1>
       </div>
@@ -280,7 +274,6 @@
     </div>
 
     <script>
-<<<<<<< HEAD
       // Function to stop chat (send request to terminate chat and disconnect)
       function stopChat() {
         fetch("/terminate", { method: "POST" }) // Send POST request to /terminate
@@ -320,8 +313,6 @@
         .getElementById("stop-chat-button")
         .addEventListener("click", stopChat);
 
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
       class ChatVisualization {
         constructor(containerId) {
           this.chatMessages = document.getElementById(containerId);
@@ -448,7 +439,6 @@
       window.addEventListener("beforeunload", () => {
         chat.disconnect();
       });
-<<<<<<< HEAD
       function keepServerAwake() {
         setInterval(() => {
           fetch("/keep-awake", {
@@ -467,8 +457,6 @@
 
       // Call the function to start the interval
       keepServerAwake();
-=======
->>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
       function toggleSidebar() {
         const sidebar = document.getElementById("side-nav");

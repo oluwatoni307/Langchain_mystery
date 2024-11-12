@@ -1,5 +1,9 @@
 # app.py
+<<<<<<< HEAD
 from flask import Flask, Response, render_template, jsonify
+=======
+from flask import Flask, Response, render_template
+>>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 import json
 import time
 import threading
@@ -94,7 +98,11 @@ def stream():
 
     return Response(generate(), mimetype="text/event-stream")
 
+<<<<<<< HEAD
 @app.route("/terminate", methods=["POST"])
+=======
+@app.route("/terminate")
+>>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 def terminate_coverage():
     """Endpoint to terminate the running coverage task"""
     success = thread_controller.terminate_thread()
@@ -103,6 +111,7 @@ def terminate_coverage():
         "message": "Coverage task terminated" if success else "No running coverage task found"
     }
 
+<<<<<<< HEAD
 @app.route("/")
 def index():
     return render_template("frontend.html")
@@ -112,6 +121,8 @@ def keep_awake():
     return jsonify(message="Server is awake"), 200
 
 
+=======
+>>>>>>> 73561cd83529cb75cbeddaf6a4e6c74ca197876a
 
 @app.route("/")
 def index():

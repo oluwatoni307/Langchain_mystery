@@ -26,11 +26,6 @@ class ThreadController:
         """Safely clear the current thread reference"""
         with self._thread_lock:
             self.current_thread = None
-    def is_running(self) -> bool:
-        """Check if there's an active thread running"""
-        with self._thread_lock:
-            return self._is_running and self.current_thread and self.current_thread.is_alive()
-    
     
     def terminate_thread(self) -> bool:
         """Terminate the currently running thread if it exists"""
@@ -75,16 +70,14 @@ def run_background_task():
 @app.route("/stream")
 def stream():
     def generate():
-        # Check if there's already a running process
-        if not thread_controller.is_running():
-            # No running process found, start a new one
-            thread = threading.Thread(target=run_background_task)
-            thread.daemon = True
-            thread_controller.set_current_thread(thread)
-            thread.start()
-            message_queue.put({"type": "info", "message": "Started new coverage process"})
-        else:
-            message_queue.put({"type": "info", "message": "Continuing existing coverage process"})
+        # Terminate any existing thread first
+        thread_controller.terminate_thread()
+        
+        # Start new thread
+        thread = threading.Thread(target=run_background_task)
+        thread.daemon = True
+        thread_controller.set_current_thread(thread)
+        thread.start()
 
         while True:
             if not message_queue.empty():
@@ -103,17 +96,15 @@ def terminate_coverage():
         "message": "Coverage task terminated" if success else "No running coverage task found"
     }
 
-
+@app.route("/")
+def index():
+    return render_template("frontend.html")
 
 @app.route('/keep-awake', methods=['GET'])
 def keep_awake():
     return jsonify(message="Server is awake"), 200
 
 
-
-@app.route("/")
-def index():
-    return render_template("frontend.html")
 
 
 

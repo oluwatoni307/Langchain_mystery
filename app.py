@@ -103,9 +103,7 @@ def terminate_coverage():
         "message": "Coverage task terminated" if success else "No running coverage task found"
     }
 
-@app.route("/")
-def index():
-    return render_template("frontend.html")
+
 
 @app.route('/keep-awake', methods=['GET'])
 def keep_awake():
